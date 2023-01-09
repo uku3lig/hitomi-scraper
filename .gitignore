@@ -1,0 +1,13 @@
+# idea
+.idea
+**.iml
+**.iws
+
+# python
+venv
+build
+
+# secrets & brackets
+credentials.json
+token.json
+bracket*.json
