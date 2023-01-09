@@ -11,3 +11,4 @@ build
 credentials.json
 token.json
 bracket*.json
+osu-token.txt
