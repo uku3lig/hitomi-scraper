@@ -52,7 +52,7 @@ def get_z_sums(values: [[str]]) -> [float]:
         yield sum([float(e) for e in row]) / MAPS_AMOUNT
 
 
-def get_teams(values: [[str]], sums: [[str]]) -> [object]:
+def get_teams(values: [[str]], sums: [[str]], players: [[str]]) -> [object]:
     mods = [m[0:2] for m in values[0]]
     ids = values[1]
     sums_avg = list(get_z_sums(sums))
@@ -60,6 +60,8 @@ def get_teams(values: [[str]], sums: [[str]]) -> [object]:
     # first 2 rows are mods (NM1 etc.) and each row has team name + each map score (MAPS + 1)
     for row, z_sum in zip([r for r in values[2:] if len(r) == (MAPS_AMOUNT + 1)], sums_avg):
         seeding_results = []
+        player_ids = [{"id": int(team_info[1])} for team_info in players if team_info[0] == row[0]]
+
         # groups maps by mod, skips first column (= team name)
         # tpl is the (int, str) tuple given by enumerate, tpl[0] = column index
         groups = itertools.groupby(enumerate(row[1:], start=1), key=lambda tpl: mods[tpl[0]])
@@ -81,7 +83,8 @@ def get_teams(values: [[str]], sums: [[str]]) -> [object]:
             "FullName": row[0],
             "Seed": -1,
             "_ZSUM": z_sum,
-            "SeedingResults": seeding_results
+            "SeedingResults": seeding_results,
+            "Players": player_ids
         }
 
 
@@ -91,12 +94,13 @@ def main():
 
     values = get_sheet_data(spreadsheet_id, 'Quals Calcs!AM:AW', scopes)
     sums = get_sheet_data(spreadsheet_id, 'Quals Calcs!BT3:CC', scopes)
+    players = get_sheet_data(spreadsheet_id, 'Quals Calcs!E3:F', scopes)
 
     if not values or not sums:
         print('No data found.')
         return
 
-    teams = list(get_teams(values, sums))
+    teams = list(get_teams(values, sums, players))
     teams = sorted(teams, key=lambda t: t["_ZSUM"], reverse=True)
 
     mod_sums = {mod: [] for mod in ["NM", "HD", "HR", "DT"]}
