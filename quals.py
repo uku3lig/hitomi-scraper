@@ -76,7 +76,9 @@ def get_teams(values: [[str]], sums: [[str]], players: [[str]]) -> [object]:
             player_infos.append({
                 "id": player,
                 "Rank": int(data["pp_rank"]),
-                "country_code": data["country"]
+                "country_code": data["country"],
+                "Username": data["username"],
+                "CoverUrl": "https://example.com"
             })
 
         seeding_results = []
