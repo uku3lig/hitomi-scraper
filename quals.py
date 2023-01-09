@@ -123,8 +123,11 @@ def main():
             for beatmap in result["Beatmaps"]:
                 beatmap["Seed"] = map_sums[str(beatmap["ID"])].index(beatmap["Score"]) + 1
 
-    with open("bracket_test.json", "w") as f:
-        json.dump(teams, f, indent=2)
+    with open("bracket.json", "r") as f:
+        bracket = json.load(f)
+        bracket["Teams"] = teams
+        with open("bracket_new.json", "w") as new:
+            json.dump(bracket, new, indent=2)
 
 
 if __name__ == '__main__':
